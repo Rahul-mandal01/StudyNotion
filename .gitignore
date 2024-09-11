@@ -1,0 +1,11 @@
+node_modules/
+.env
+
+
+StudyNotion-Project\ Description/
+
+
+
+
+# How to Effectively Remove confidential File from Git Repo/History
+https://medium.com/@khaledb.yahya/how-to-effectively-remove-env-file-from-git-repo-history-bd5f14b7a322
