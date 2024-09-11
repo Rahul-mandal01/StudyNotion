@@ -20,16 +20,16 @@ const OTPSchema = new mongoose.Schema({
 
 // function to send email notification
 
-// async function sendVerificationEmail(email, otp){
-//     // code to send email using nodemailer or any other email service
-//     try{
-//         const mailResponse = await mailSender(email,"Verification Email from StudyNotion", otp);
-//         console.log("Email sent Successfully: ", mailResponse);
-//     }catch(error){
-//         console.log("Error sending verification email: " + error);
-//         throw error;
-//     }
-// }
+async function sendVerificationEmail(email, otp){
+    // code to send email using nodemailer or any other email service
+    try{
+        const mailResponse = await mailSender(email,"Verification Email from StudyNotion", otp);
+        console.log("Email sent Successfully: ", mailResponse);
+    }catch(error){
+        console.log("Error sending verification email: " + error);
+        throw error;
+    }
+}
 
 OTPSchema.pre("save", async function(next){
     await sendVerificationEmail(this.email, this.otp);
