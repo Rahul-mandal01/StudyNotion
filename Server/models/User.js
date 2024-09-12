@@ -53,4 +53,6 @@ const userSchema = new monogoose.Schema({
         }
     ]
 
-})
+});
+
+module.exports = mongoose.model("User", userSchema);
