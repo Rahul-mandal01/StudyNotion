@@ -38,6 +38,10 @@ exports.createCourse = async (req, res) => {
             const instructorDetails = await User.findById(userId);
             console.log( "Instructor Details: " , instructorDetails);
 
+            // TODO: verify that userId and InstructionDetails._id are same or different ?
+
+            
+
             if(!instructorDetails){
                 return res.status(404).json({
                     success: false,
@@ -114,7 +118,7 @@ exports.showAllCourses = async (req, res ) => {
                                                     ratingAndReviews: true,
                                                     studentsEnrolled: true})
                                                     .populate("instructor")
-                                                    .exex();
+                                                    .exec();
         
         return res.status(200).json({
             success: true,
