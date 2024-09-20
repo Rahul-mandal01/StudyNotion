@@ -5,61 +5,49 @@ const bcrypt = require("bcrypt");
 
 
 // reset password token
-exports.resetPasswordToken = async(req, res) =>{
-    try{
-        // GET EMAIL FROM REQ BODY
-        const {email} = req.body;
+exports.resetPasswordToken = async (req, res) => {
+	try {
+		const email = req.body.email;
+		const user = await User.findOne({ email: email });
+		if (!user) {
+			return res.json({
+				success: false,
+				message: `This Email: ${email} is not Registered With Us Enter a Valid Email `,
+			});
+		}
+		const token = crypto.randomBytes(20).toString("hex");
 
-        // EMAIL VALIDATION, CHECK USER WITH THIS EMAIL
-        const user = await User.findOne({email: email});
-        if(!user){
-            return res.json({
-                success: false,
-                message: "Your email is not registered with us"
-            })
-        }
+		const updatedDetails = await User.findOneAndUpdate(
+			{ email: email },
+			{
+				token: token,
+				resetPasswordExpires: Date.now() + 3600000,
+			},
+			{ new: true }
+		);
+		console.log("DETAILS", updatedDetails);
 
+		const url = `http://localhost:3000/update-password/${token}`;
 
-        //GENERATE TOKEN 
-        const token = crypto.randomUUID();
-        console.log(token);
+		await mailSender(
+			email,
+			"Password Reset",
+			`Your Link for email verification is ${url}. Please click this url to reset your password.`
+		);
 
-        // UPDATE USER BY ADDING TOKEN AND EXPIRATION TIME
-        const updatedDetails = await User.findOneAndUpdate(
-                                        {email: email},
-                                        {
-                                            token: token,
-                                            resetPasswordExpires: Date.now() + 5*60*1000,
-                                        },
-                                        {new:true});
-        
-
-
-        // CREATE URL
-            const url = `http://localhost:3000/update-password/${token}`
-
-        // SEND EMAIL WITH RESET LINK
-        await mailSender(email,
-                             "Password Reset Password Link",
-                                `Password Reset Password Link: ${url}`);
-
-
-
-
-        // RETURN RESPONSE
-        return res.json({
-            success: true,
-            message: "Reset password link sent successfully, please check email and change password",
-        });
-
-
-    }catch(error){
-        res.status(401).json({
-            status: false,
-            message:"Something went wrong, couldn't reset password"
-        })
-    }
-}
+		res.json({
+			success: true,
+			message:
+				"Email Sent Successfully, Please Check Your Email to Continue Further",
+		});
+	} catch (error) {
+		return res.json({
+			error: error.message,
+			success: false,
+			message: `Some Error in Sending the Reset Message`,
+		});
+	}
+};
 
 
 // reset password
