@@ -1,5 +1,5 @@
 const Course = require("models/course");
-const Tag = require("models/tag");
+const Category = require("models/category");
 const User = require("models/user");
 const {uploadImageToCloudinary} = require("../utils/imageUploader");
 
@@ -12,7 +12,10 @@ exports.createCourse = async (req, res) => {
                     courseDescription,
                         whatYouWillLearn,
                             price,
-                                tag
+                                tag,
+                                    category,
+                                        status,
+                                            instructions
                                     } = req.body;
         
         // GET THUMBNAIL
@@ -25,11 +28,16 @@ exports.createCourse = async (req, res) => {
                     !whatYouWillLearn ||
                         !price ||
                             !tag ||
-                                !thumbnail){
+                                !thumbnail ||
+                                    !category){
                                     res.status(400).json({
                                         success: false,
                                         message: "All fields are required",
                                             });
+            }
+
+            if (!status || status === undefined) {
+                status = "Draft";
             }
         
             // CHECK FOR INSTRUCTOR
@@ -50,12 +58,12 @@ exports.createCourse = async (req, res) => {
             }
 
 
-            // CHECK GIVEN TAG IS VALID OR NOT
-            const tagDetails = await Tag.findById(tag);
-            if(!tagDetails){
+            // CHECK GIVEN CATEGORY IS VALID OR NOT
+            const categoryDetails = await Category.findById(category);
+            if (!categoryDetails) {
                 return res.status(404).json({
                     success: false,
-                    message: "Invalid tag",
+                    message: "Category Details Not Found",
                 });
             }
 
@@ -68,11 +76,15 @@ exports.createCourse = async (req, res) => {
                 courseName,
                 courseDescription,
                 instructor: instructorDetails._id,
-                whatYouWillLearn,
+                whatYouWillLearn: whatYouWillLearn,
                 price,
-                thumbnailImage,
-                tags: tagDetails._id,
-            })
+                tag: tag,
+                category: categoryDetails._id,
+                thumbnail: thumbnailImage.secure_url,
+                status: status,
+                instructions: instructions,
+            });
+    
 
             // ADD THE NEW COURSE TO THE USER SCHEMA OF INSTRUCTOR
 
@@ -86,9 +98,16 @@ exports.createCourse = async (req, res) => {
                 {new: true},
             );
 
-
-            // UPDATE THE TAG KA SCHEMA
-            // TODO: HOMEWORK
+		// Add the new course to the Categories
+		await Category.findByIdAndUpdate(
+			{ _id: category },
+			{
+				$push: {
+					course: newCourse._id,
+				},
+			},
+			{ new: true }
+		);
 
             return res.status(200).json({
                 success: true,
@@ -116,7 +135,9 @@ exports.showAllCourses = async (req, res ) => {
                                                     thumbnail: true,
                                                     instructor: true,
                                                     ratingAndReviews: true,
-                                                    studentsEnrolled: true})
+                                                    studentsEnrolled: true
+                                                }
+                                            )
                                                     .populate("instructor")
                                                     .exec();
         
