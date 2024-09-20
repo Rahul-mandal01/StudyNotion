@@ -84,6 +84,7 @@ exports.updateSection = async(req, res) => {
 }
 
 
+// DELETE A SECTION
 
 exports.deleteSection = async(req, res) => {
     try{
