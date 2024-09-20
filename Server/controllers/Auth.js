@@ -4,7 +4,10 @@ const otpGenerator = require("otp-generator");
 const Profile = require("../models/Profile");
 const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
+const mailSender = require("../utils/mailSender");
+const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 require("dotenv").config();
+
 
 // SEND OTP
 exports.sendOTP = async (req, res) => {
@@ -68,12 +71,12 @@ exports.sendOTP = async (req, res) => {
 }
 
 
-// sign up
+// Signup Controller for Registering USers
 
 exports.signup = async (req, res) => {
 
     try{
-            // DATA FETCH FROM REQ BODY
+            // Destructure fields from the request body
             const {
                 email,
                 password,
@@ -88,7 +91,13 @@ exports.signup = async (req, res) => {
 
             // VALIDATE REQUEST
 
-            if(!firstName || !lastName || !email || !password || !confirmPassword || !otp){
+            if(!firstName || 
+                !lastName || 
+                !email || 
+                !password || 
+                !confirmPassword || 
+                !otp
+            ){
                 return res.status(400).json({
                     success: false,
                     message: "All fields are required",
@@ -153,6 +162,7 @@ exports.signup = async (req, res) => {
                 lastName,
                 accountType,
                 contactNumber,
+                approved: approved,
                 additionalDetails: profileDetails._id,
                 image: `https://api.dicebear.com/9.x/initials/svg?seed= ${firstName} ${lastName}`,
             })
@@ -248,18 +258,76 @@ exports.login = async(req, res) => {
     }
 }
 
-// change password
+// Controller for Changing Password
 // --------------------------HOMEWORK------------
-exports.changePassword = async(req, res) =>{
-    try{
-        // GET DATA FROM REQ BODY
-        // GET OLD PASSWORD, NEW PASSWORD, CONFIRM PASSWORD
-        // VALIDATION
-        // UPDATE PASSWORD IN DATABASE
-        // SEND EMAIL --PASSWORD UPDATE
-        // RETURN RESPONSE
+exports.changePassword = async (req, res) => {
+	try {
+		// Get user data from req.user
+		const userDetails = await User.findById(req.user.id);
 
-    }catch(error){
+		// Get old password, new password, and confirm new password from req.body
+		const { oldPassword, newPassword, confirmNewPassword } = req.body;
 
-    }
-}
+		// Validate old password
+		const isPasswordMatch = await bcrypt.compare(
+			oldPassword,
+			userDetails.password
+		);
+		if (!isPasswordMatch) {
+			// If old password does not match, return a 401 (Unauthorized) error
+			return res
+				.status(401)
+				.json({ success: false, message: "The password is incorrect" });
+		}
+
+		// Match new password and confirm new password
+		if (newPassword !== confirmNewPassword) {
+			// If new password and confirm new password do not match, return a 400 (Bad Request) error
+			return res.status(400).json({
+				success: false,
+				message: "The password and confirm password does not match",
+			});
+		}
+
+		// Update password
+		const encryptedPassword = await bcrypt.hash(newPassword, 10);
+		const updatedUserDetails = await User.findByIdAndUpdate(
+			req.user.id,
+			{ password: encryptedPassword },
+			{ new: true }
+		);
+
+		// Send notification email
+		try {
+			const emailResponse = await mailSender(
+				updatedUserDetails.email,
+				passwordUpdated(
+					updatedUserDetails.email,
+					`Password updated successfully for ${updatedUserDetails.firstName} ${updatedUserDetails.lastName}`
+				)
+			);
+			console.log("Email sent successfully:", emailResponse.response);
+		} catch (error) {
+			// If there's an error sending the email, log the error and return a 500 (Internal Server Error) error
+			console.error("Error occurred while sending email:", error);
+			return res.status(500).json({
+				success: false,
+				message: "Error occurred while sending email",
+				error: error.message,
+			});
+		}
+
+		// Return success response
+		return res
+			.status(200)
+			.json({ success: true, message: "Password updated successfully" });
+	} catch (error) {
+		// If there's an error updating the password, log the error and return a 500 (Internal Server Error) error
+		console.error("Error occurred while updating password:", error);
+		return res.status(500).json({
+			success: false,
+			message: "Error occurred while updating password",
+			error: error.message,
+		});
+	}
+};
