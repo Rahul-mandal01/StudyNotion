@@ -58,7 +58,7 @@ exports.deleteAccount = async (req, res) =>{
         const id = req.user.id;
 
         // VALIDATION
-        const userDetails = await User.findById(id);
+        const userDetails = await User.findById({ _id: id });
         if(!userDetails){
             return res.status(404).json({
                 success: false,
