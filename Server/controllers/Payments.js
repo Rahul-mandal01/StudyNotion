@@ -137,18 +137,18 @@ exports.verifySignature = async(req, res) => {
             console.log(enrolledStudent);
 
             // NEED TO SEND CONFIRMATION MAIL
-            // const emailResponse = await mailSender(
-            //                         enrolledStudent.email,
-            //                         "Congratulations on Your Enrollment in the New CodeHelp Course!",       //EMAIL TITLE
-            //                         "Welcome to CodeHelp! Your Enrollment is Confirmed",       //EMAIL HEADING
-            //                         courseEnrollmentEmail(enrolledCourse, enrolledStudent)
-            // );
+            const emailResponse = await mailSender(
+                                    enrolledStudent.email,
+                                    "Congratulations on Your Enrollment in the New CodeHelp Course!",       //EMAIL TITLE
+                                    "Welcome to CodeHelp! Your Enrollment is Confirmed",       //EMAIL HEADING
+                                    courseEnrollmentEmail(enrolledCourse, enrolledStudent)
+            );
 
-            // console.log(emailResponse);
-            // return res.status(200).json({
-            //     success: true,
-            //     message: "Payment verified successfully",
-            // })
+            console.log(emailResponse);
+            return res.status(200).json({
+                success: true,
+                message: "Payment verified successfully",
+            })
 
         }catch(error){
             console.error(error);
