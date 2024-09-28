@@ -155,3 +155,57 @@ exports.showAllCourses = async (req, res ) => {
         });
     }
 }
+
+
+// getCourseDetails handler function
+
+exports.getCourseDetails = async (req, res ) => {
+    try{
+        // GET ID
+        const { courseId } = req.body;
+
+        // FIND COURSE DETAIL
+        const courseDetails = await Course.find(
+                                        {_id: courseId})
+                                        .populate(
+                                            {
+                                                path : "instructor",
+                                                populate:{
+                                                    path:"additionalDetails",
+                                                }
+                                            }
+                                        )
+
+                                        .populate("category")
+                                        .populate("ratingAndReviews")
+                                        .populate({
+                                            path:"courseContent",
+                                            populate:{
+                                                path:"subSection"
+                                            }
+                                        })
+                                        .exec();
+                    
+        // VALIDATION
+        if(!courseDetails){
+            return res.status(400).json({
+                success: false,
+                message: `Could not find course with ${courseId}`,
+            });
+        }
+
+        // RETURN RESPONSE
+        return res.status(200).json({
+            success: true,
+            message: "Course details fetched successfully",
+            data: courseDetails,
+        });
+
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: `An error occurred while fetching course details: ${error.message}`,
+        });
+    }
+}
