@@ -62,9 +62,10 @@ exports.showAllcategories = async ( req, res ) => {
     }
 }
 
-
+// categoryPageDetails handler function
 exports.categoryPageDetails = async (req, res) => {
 	try {
+		// GET CATEGORY ID
 		const { categoryId } = req.body;
 
 		// Get courses for the specified category
@@ -75,9 +76,10 @@ exports.categoryPageDetails = async (req, res) => {
 		// Handle the case when the category is not found
 		if (!selectedCategory) {
 			console.log("Category not found.");
-			return res
-				.status(404)
-				.json({ success: false, message: "Category not found" });
+			return res.status(404).json({ 
+				success: false, 
+				message: "Category not found" 
+			});
 		}
 		// Handle the case when there are no courses
 		if (selectedCategory.courses.length === 0) {
@@ -92,8 +94,10 @@ exports.categoryPageDetails = async (req, res) => {
 
 		// Get courses for other categories
 		const categoriesExceptSelected = await Category.find({
-			_id: { $ne: categoryId },
-		}).populate("courses");
+													_id: { $ne: categoryId },
+												})
+											.populate("courses")
+											.exec();
 		let differentCourses = [];
 		for (const category of categoriesExceptSelected) {
 			differentCourses.push(...category.courses);
