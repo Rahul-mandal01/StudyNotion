@@ -9,7 +9,8 @@ const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 require("dotenv").config();
 
 
-// SEND OTP
+// SEND OTP FOR EMAIL VERIFICATION
+
 exports.sendOTP = async (req, res) => {
     try{
          // fetch email from request's body
@@ -17,28 +18,30 @@ exports.sendOTP = async (req, res) => {
 
         // check if user already exists
         const checkUserPresent = await User.findOne({email});
+
+        // IF USER FOUND WITH PROVIDED EMAIL
         if(checkUserPresent){
             return res.status(401).json({
                 success: false,
-                message:"User already exists",
+                message:"User is already registered",
             })
         }
 
-        // genetate OTP
-
+        // GENERATE OTP
         var otp = otpGenerator.generate(6, {
             upperCaseAlphabets: false,
             lowerCaseAlphabets: false,
             specialChars: false,
         });
 
-        console.log("OTP Generated", otp);
+        console.log("OTP Generated: ", otp);
 
-        // check uniqueness in otp
+
+        // CHECK UNIQUENESS IN OTP
         const result = await OTP.findOne({otp: otp});
 
         while(result){
-            otp = otpGenerator(6, {
+            otp = otpGenerator.generate(6, {
                 upperCaseAlphabets: false,
                 lowerCaseAlphabets: false,
                 specialChars: false,
@@ -51,7 +54,7 @@ exports.sendOTP = async (req, res) => {
 
         // save otp to database
         const  otpBody = await OTP.create(otpPayload);
-        console.log(otpBody);
+        console.log( "OTP Body" ,otpBody);
 
         // return response successfully
         res.status(200).json({
@@ -71,7 +74,7 @@ exports.sendOTP = async (req, res) => {
 }
 
 
-// Signup Controller for Registering USers
+// SIGNUP CONTROLLER FOR AUTHENTICATING USERS
 
 exports.signup = async (req, res) => {
 
@@ -117,24 +120,24 @@ exports.signup = async (req, res) => {
 
             const existingUser = await User.findOne({email});
             if(existingUser){
-                return res.status(400).json({
+                return res.status(409).json({
                     success: false,
-                    message: "User already registered",
+                    message: "User already registered, Please sign in to continue",
                 })
             }
 
             // FIND MOST RECENT OTP STORED FOR THE USER
-            const recentOtp = await OTP.findOne({email}).sort({createdAt: -1}).limit(1);
+            const recentOtp = await OTP.find({email}).sort({createdAt: -1}).limit(1);  //.sort({createdAt: -1}): This sorts the results by the createdAt field in descending order (newest first). The -1 indicates descending order
             console.log(recentOtp);
 
             // VALIDATE OTP
-            if(recentOtp.length == 0){
-                // OTP not found
-                return res.status(400).json({
+            if(recentOtp.length === 0){
+                // OTP not Pound
+                return res.status(404).json({
                     success: false,
-                    message: "OTP Not Found",
+                    message: "Invalid OTP",
                 })
-            }else if( otp !== recentOtp.otp){
+            }else if( otp !== recentOtp[0].otp){
                 // Invalid OTP
                 return res.status(400).json({
                     success: false,
@@ -143,10 +146,14 @@ exports.signup = async (req, res) => {
             }
 
             // HASH PASSWORD
-            const hashedPassword = await bcrypt.hash(password, 10);
+            const hashedPassword = await bcrypt.hash(password, 10);         // Hash the password with 10 salt rounds
             console.log("Hashed Password: ", hashedPassword);
 
-            // ENTRY CRAETE IN DATABASE
+            // Create the user
+            let approved = "";
+            approved === "Instructor" ? (approved = false) : (approved = true);
+
+            // ENTRY CREATE IN DATABASE
 
             const profileDetails = await Profile.create({
                 gender: null,
@@ -160,7 +167,7 @@ exports.signup = async (req, res) => {
                 password: hashedPassword,
                 firstName,
                 lastName,
-                accountType,
+                accountType: accountType,
                 contactNumber,
                 approved: approved,
                 additionalDetails: profileDetails._id,
@@ -185,7 +192,7 @@ exports.signup = async (req, res) => {
     }
 }
 
-// login
+// LOGIN CONTROLLER FOR REGISTERING USER
 
 exports.login = async(req, res) => {
     try{
@@ -196,7 +203,7 @@ exports.login = async(req, res) => {
         // DATA VALIDATION
 
         if(!email ||!password){
-            return res.status(403).json({
+            return res.status(400).json({
                 success: false,
                 message: "All fields are required",
             })
@@ -206,7 +213,7 @@ exports.login = async(req, res) => {
 
         const user = await User.findOne({email}).populate("additionalDetails");
         if(!user){
-            return res.status(401).json({
+            return res.status(404).json({
                 success: false,
                 message: "User not found, please sign up first",
             });
@@ -222,10 +229,12 @@ exports.login = async(req, res) => {
                 accountType : user.accountType,
             }
             const token = jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: "2h"
+                expiresIn: "24h"
                 });
+
+            // SAVE TOKEN TO USER DOCUMENTS IN DATABASE
             user.token = token;
-            user.password = undefined;
+            user.password = undefined;      // This ensures that the password is not exposed when the user object is sent back to the client.
 
             // CREATE COOKIE AND SEND RESPONSE 
 
@@ -258,8 +267,8 @@ exports.login = async(req, res) => {
     }
 }
 
-// Controller for Changing Password
-// --------------------------HOMEWORK------------
+// CONTROLLER FOR CHANGING PASSWORD
+
 exports.changePassword = async (req, res) => {
 	try {
 		// Get user data from req.user
