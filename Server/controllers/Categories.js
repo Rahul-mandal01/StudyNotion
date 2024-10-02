@@ -8,7 +8,7 @@ exports.createCategories = async (req, res) =>{
         // FETCH DATA
         const {name, description} = req.body;
 
-        // VALIDATION
+        // VALIDATION	--400 Bad Request
         if(!name || !description){
             return res.status(400).json({
                 success: false,
@@ -26,7 +26,7 @@ exports.createCategories = async (req, res) =>{
 
 
         // RETURN RESPONSE
-        return res.status(200).json({
+        return res.status(201).json({
             success: true,
             message: "Tag created successfully",
         })
