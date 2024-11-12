@@ -23,7 +23,7 @@ exports.sendOTP = async (req, res) => {
         if(checkUserPresent){
             return res.status(401).json({
                 success: false,
-                message:"User is already registered",
+                message:`User is already registered`,
             })
         }
 
@@ -59,7 +59,7 @@ exports.sendOTP = async (req, res) => {
         // return response successfully
         res.status(200).json({
             success: true,
-            message: "OTP sent successfully",
+            message: `OTP sent successfully`,
             otp,
         })
 
@@ -228,9 +228,13 @@ exports.login = async(req, res) => {
                 id : user._id,
                 accountType : user.accountType,
             }
-            const token = jwt.sign(payload, process.env.JWT_SECRET, {
-                expiresIn: "24h"
-                });
+            const token = jwt.sign(
+                payload, 
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "24h"
+                }
+            );
 
             // SAVE TOKEN TO USER DOCUMENTS IN DATABASE
             user.token = token;
@@ -245,7 +249,7 @@ exports.login = async(req, res) => {
 
             res.cookie("token", token, options).status(200).json({
                 success: true,
-                message: "Login successful",
+                message: `Login successful`,
                 user,
                 token,
             });
@@ -253,7 +257,7 @@ exports.login = async(req, res) => {
         }else{
             return res.status(401).json({
                 success: false,
-                message: "Invalid password",
+                message: `Invalid password`,
             });
         }
 
