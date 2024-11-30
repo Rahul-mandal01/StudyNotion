@@ -6,6 +6,8 @@ const {uploadImageToCloudinary} = require("../utils/imageUploader");
 // createCourse handler function
 exports.createCourse = async (req, res) => {
     try{
+        // GET USER ID FROM REQUEST OBJECT
+        const userId = req.user.id;
 
         // FETCH DATA 
         const { courseName,
@@ -21,8 +23,8 @@ exports.createCourse = async (req, res) => {
         // GET THUMBNAIL
         const thumbnail = req.files.thumbnailImage;
 
-        // VALIDATION
 
+        // VALIDATION
         if( !courseName || 
                 !courseDescription ||
                     !whatYouWillLearn ||
@@ -30,10 +32,10 @@ exports.createCourse = async (req, res) => {
                             !tag ||
                                 !thumbnail ||
                                     !category){
-                                    res.status(400).json({
-                                        success: false,
-                                        message: "All fields are required",
-                                            });
+                                        return res.status(400).json({
+                                            success: false,
+                                            message: "All fields are required",
+                                        });
             }
 
             if (!status || status === undefined) {
@@ -42,12 +44,9 @@ exports.createCourse = async (req, res) => {
         
             // CHECK FOR INSTRUCTOR
 
-            const userId = req.user.id;
-            const instructorDetails = await User.findById(userId);
-            console.log( "Instructor Details: " , instructorDetails);
-
-            // TODO: verify that userId and InstructionDetails._id are same or different ?
-
+            const instructorDetails = await User.findById(userId, {
+                accountType: "Instructor",
+            });
             
 
             if(!instructorDetails){
@@ -67,7 +66,7 @@ exports.createCourse = async (req, res) => {
                 });
             }
 
-            // UPLOAD IMAGE TO CLOUDINARY
+            // UPLOAD THUMBNAIL TO CLOUDINARY
             const thumbnailImage = await uploadImageToCloudinary(thumbnail, process.env.FOLDER_NAME);
 
             // CREATE AN ENTRY FOR NEW COURSE IN DATABASE
@@ -118,6 +117,7 @@ exports.createCourse = async (req, res) => {
 
 
     }catch(error){
+        // HANDLE ANY ERROR THAT OCCUR DURING CREATION OF THE COURSE
         console.log(error);
         return res.status(500).json({
             success: false,
