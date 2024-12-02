@@ -14,12 +14,12 @@ exports.capturePayment = async (req, res)=> {
         const userId = req.user.id;
 
         // VALID COURSE ID
-        // if(!course_id){
-        //     return res.json({
-        //         success: false,
-        //         message: "Please provide valid course ID",
-        //     })
-        // }
+        if(!course_id){
+            return res.json({
+                success: false,
+                message: "Please provide valid course ID",
+            })
+        }
 
         // VALID COURSE DETAIL
         let course;
