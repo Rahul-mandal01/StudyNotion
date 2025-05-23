@@ -66,7 +66,7 @@ This project is licensed under the MIT License - see the [LICENSE](./path/to/LIC
 
 Thank you for visiting the StudyNotion repository! I appreciate your interest and support. If you have any questions, suggestions, or improvements, feel free to open an issue or submit a pull request.
 
-Happy learning and coding! 🚀...
+Happy learning and coding! 🚀....
 
 ---
 
