@@ -52,7 +52,7 @@ app.use("/api/v1/payment", paymentRoutes);
 app.get("/", (req, res) => {
     return res.json({
         success: true,
-        message: "Welcome to StudyNotion API, Your API is running"
+        message: "Welcome to StudyNotion, Healthcheck StudyNotion Working As Expected✅️✅"
     });
 });
 
