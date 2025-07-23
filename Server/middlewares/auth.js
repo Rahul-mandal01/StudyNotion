@@ -5,42 +5,41 @@ const User = require("../models/User");
 
 // auth
 
-exports.auth = async(req, res, next) => {
-    try{
-        // extract token
-        const token = req.cookies.token 
-                            || req.body.token 
-                                || req.header("Authorisation").replace("Bearer ","");
+exports.auth = async (req, res, next) => {
+  try {
+    // Extract token from cookies, body, or Authorization header
+    const token =
+      req.cookies.token ||
+      req.body.token ||
+      (req.header("Authorization") || "").replace("Bearer ", "");
 
-        // if token is missing, then return response
-        if(!token){
-            return res.status(401).json({
-                success: false,
-                message: "Token is missing"
-            });
-
-            // verify the token
-            try{
-                const decode = jwt.verify(token, process.env.JWT_SECRET);
-                console.log(decode);
-                req.user = decode; 
-            }catch(error){
-                // verification - issue
-                return res.status(401).json({
-                    success: false,
-                    message: "token is invalid",
-                })
-            }
-            next();
-        }
-    }catch(error){
-        return res.status(401).json({
-            success: false,
-            message: "An error occurred while authenticating the user",
-        })
+    // Check if token is missing
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Token is missing"
+      });
     }
 
-}
+    // Verify token
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = decoded;
+      next();
+    } catch (error) {
+      return res.status(401).json({
+        success: false,
+        message: "Token is invalid",
+      });
+    }
+  } catch (error) {
+    return res.status(401).json({
+      success: false,
+      message: "An error occurred while authenticating the user",
+    });
+  }
+};
+
 
 // isStudent
 
@@ -64,7 +63,7 @@ exports.isStudent = async (req, res, next) => {
 
 // isInstructor
 
-exports.isInsturctor = async(req, res, next) =>{
+exports.isInstructor = async(req, res, next) =>{
     try{
         if( req.user.accountType !== "Instructor"){
             return res.status(401).json({
@@ -83,7 +82,7 @@ exports.isInsturctor = async(req, res, next) =>{
 
 // isAdmin
 
-exports.IsAdmin = async (req, res, next) => {
+exports.isAdmin = async (req, res, next) => {
     try{
         if(req.user.accountType !== "Admin"){
             return res.status(401).json({
