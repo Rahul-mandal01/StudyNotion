@@ -90,6 +90,7 @@ exports.isAdmin = async (req, res, next) => {
                 message: "This is protected route for admin only"
             })
         }
+        next();
     }catch(error){
         res.status(500).json({
             success: false,
