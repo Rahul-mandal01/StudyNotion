@@ -3,7 +3,8 @@ const Category = require("../models/Category");
 exports.createCategory = async (req, res) => {
 	try {
 		const { name, description } = req.body;
-		if (!name) {
+
+		if (!name || !description) {
 			return res
 				.status(400)
 				.json({ success: false, message: "All fields are required" });
@@ -15,12 +16,13 @@ exports.createCategory = async (req, res) => {
 		console.log(CategorysDetails);
 		return res.status(200).json({
 			success: true,
-			message: "Categorys Created Successfully",
+			message: "Categories Created Successfully",
 		});
 	} catch (error) {
+		console.error("Error in createCategory:", error.message); // Log concise error
 		return res.status(500).json({
-			success: true,
-			message: error.message,
+			success: false,
+			message: "An error occurred while creating the category. Please try again later.",
 		});
 	}
 };
