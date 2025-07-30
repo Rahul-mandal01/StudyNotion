@@ -3,42 +3,49 @@ const User = require("../models/User");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 // Method for updating a profile
 exports.updateProfile = async (req, res) => {
-	try {
-		const { dateOfBirth = "", about = "", contactNumber="" } = req.body;
-		// const id = req.user.id;
-		console.log(1);
+    try {
+        const { dateOfBirth = "", about = "", contactNumber = "", gender="" } = req.body;
+        const id = req.user.id;
 
-		// Find the profile by id
+        // Find the profile by id
 		const userDetails = await User.findById(id);
-		const profile = await Profile.findById(userDetails.additionalDetails);
-		console.log(2);
+        if (!userDetails) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+            });
+        }
 
+        const profile = await Profile.findById(userDetails.additionalDetails);
+        if (!profile) {
+            return res.status(404).json({
+                success: false,
+                message: "Profile not found",
+            });
+        }
 
-		// Update the profile fields
-		profile.dateOfBirth = dateOfBirth;
-		profile.about = about;
-		profile.contactNumber = contactNumber;
-		console.log(3);
+        // Update the profile fields
+        profile.dateOfBirth = dateOfBirth;
+        profile.about = about;
+        profile.contactNumber = contactNumber;
+        profile.gender = gender;
 
+        // Save the updated profile
+        const updatedProfile = await profile.save();
 
-		// Save the updated profile
-		await profile.save();
-console.log(4);
-
-		return res.json({
-			success: true,
-			message: "Profile updated successfully",
-			profile,
-		});
-	} catch (error) {
-		console.log(error);
-		return res.status(500).json({
-			success: false,
-			error: error.message,
-		});
-	}
+        return res.json({
+            success: true,
+            message: "Profile updated successfully",
+            profile: updatedProfile,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            error: error.message,
+        });
+    }
 };
-
 exports.deleteAccount = async (req, res) => {
 	try {
 		// TODO: Find More on Job Schedule
