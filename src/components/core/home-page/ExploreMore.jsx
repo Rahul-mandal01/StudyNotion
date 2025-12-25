@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { HomePageExplore } from "../../../data/homepage-explore";
+import { HomePageExplore } from "../../../data/homepageExplore";
 import CourseCard from "./CourseCard";
 import HighlightText from "./HighlightText";
 
