@@ -45,9 +45,9 @@ exports.signup = async (req, res) => {
           "Password and Confirm Password do not match. Please try again.",
       });
     }
-    const normalizedEmail = email.trim().toLowerCase();
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email: normalizedEmail });
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
         success: false,
@@ -56,9 +56,7 @@ exports.signup = async (req, res) => {
     }
 
     // Find the most recent OTP for the email
-    const response = await OTP.find({ email: normalizedEmail })
-      .sort({ createdAt: -1 })
-      .limit(1);
+    const response = await OTP.find({ email }).sort({ createdAt: -1 }).limit(1);
     console.log(response);
     if (response.length === 0) {
       // OTP not found for the email
