@@ -8,7 +8,7 @@ import { HiClock } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 
-import { formatDate } from "../../../../services/formatDate";
+import { formatDate } from "../../../../utils/formatDate";
 import {
   deleteCourse,
   fetchInstructorCourses,
@@ -17,7 +17,6 @@ import { COURSE_STATUS } from "../../../../utils/constants";
 import ConfirmationModal from "../../../common/ConfirmationModal";
 
 export default function CoursesTable({ courses, setCourses }) {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
   const [loading, setLoading] = useState(false);
