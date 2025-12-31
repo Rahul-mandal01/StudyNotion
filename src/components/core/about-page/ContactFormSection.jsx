@@ -1,4 +1,4 @@
-import ContactUsForm from "../../contact-page/ContactUsForm";
+import ContactUsForm from "../../core/contact-page/ContactUsForm";
 
 const ContactFormSection = () => {
   return (
