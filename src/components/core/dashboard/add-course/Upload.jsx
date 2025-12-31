@@ -57,15 +57,16 @@ export default function Upload({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedFile, setValue]);
 
+  // console.log("ENTERED IN ARENA")
+
   return (
     <div className="flex flex-col space-y-2">
       <label className="text-sm text-richblack-5" htmlFor={name}>
         {label} {!viewData && <sup className="text-pink-200">*</sup>}
       </label>
       <div
-        className={`${
-          isDragActive ? "bg-richblack-600" : "bg-richblack-700"
-        } flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500`}
+        className={`${isDragActive ? "bg-richblack-600" : "bg-richblack-700"
+          } flex min-h-[250px] cursor-pointer items-center justify-center rounded-md border-2 border-dotted border-richblack-500`}
       >
         {previewSource ? (
           <div className="flex w-full flex-col p-6">
@@ -95,7 +96,7 @@ export default function Upload({
         ) : (
           <div
             className="flex w-full flex-col items-center p-6"
-            {...getRootProps()}
+            {...getRootProps()} onClick={() => inputRef.current?.click()}
           >
             <input {...getInputProps()} ref={inputRef} />
             <div className="grid aspect-square w-14 place-items-center rounded-full bg-pure-greys-800">
