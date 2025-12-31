@@ -1,6 +1,7 @@
 import Footer from "../components/common/Footer";
-import ContactDetails from "../components/contact-page/ContactDetails";
-import ContactForm from "../components/contact-page/ContactForm";
+import ReviewSlider from "../components/common/ReviewSlider";
+import ContactDetails from "../components/core/contact-page/ContactDetails";
+import ContactForm from "../components/core/contact-page/ContactForm";
 
 const Contact = () => {
   return (
@@ -16,12 +17,12 @@ const Contact = () => {
           <ContactForm />
         </div>
       </div>
-      <div className="relative mx-auto my-20 flex w-11/12 max-w-maxContent flex-col items-center justify-between gap-8 bg-richblack-900 text-white">
+      <div className="relative mx-auto my-20 flex w-11/12 max-w-maxContent flex-col justify-center gap-8 bg-richblack-900 text-white">
         {/* Reviws from Other Learner */}
         <h1 className="text-center text-4xl font-semibold mt-8">
           Reviews from other learners
         </h1>
-        {/* <ReviewSlider /> */}
+        <ReviewSlider />
       </div>
       <Footer />
     </div>
