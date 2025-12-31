@@ -28,6 +28,7 @@ export function sendOtp(email, navigate) {
       console.log(response.data.success);
 
       if (!response.data.success) {
+        toast.error(response.data.message);
         throw new Error(response.data.message);
       }
 
@@ -35,7 +36,7 @@ export function sendOtp(email, navigate) {
       navigate("/verify-email");
     } catch (error) {
       console.log("SENDOTP API ERROR............", error);
-      toast.error("Could Not Send OTP");
+      toast.error(error?.response?.data?.message || "Failed to send OTP");
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);
@@ -69,13 +70,16 @@ export function signUp(
       console.log("SIGNUP API RESPONSE............", response);
 
       if (!response.data.success) {
+        toast.error("response.data.message");
+        console.log(".....................", response.data.message)
+
         throw new Error(response.data.message);
       }
       toast.success("Signup Successful");
       navigate("/login");
     } catch (error) {
       console.log("SIGNUP API ERROR............", error);
-      toast.error("Signup Failed");
+      toast.error(error?.response?.data?.message || "Failed to sign up");
       navigate("/signup");
     }
     dispatch(setLoading(false));
@@ -111,7 +115,7 @@ export function login(email, password, navigate) {
       navigate("/dashboard/my-profile");
     } catch (error) {
       console.log("LOGIN API ERROR............", error);
-      toast.error("Login Failed");
+      toast.error(error?.response?.data?.message || "Failed to login");
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);
