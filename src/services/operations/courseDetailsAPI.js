@@ -269,13 +269,13 @@ export const fetchInstructorCourses = async (token) => {
         Authorization: `Bearer ${token}`,
       }
     );
-    console.log("INSTRUCTOR COURSES API RESPONSE............", response);
+    // console.log("INSTRUCTOR COURSES API RESPONSE............", response);
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Instructor Courses");
     }
     result = response?.data?.data;
   } catch (error) {
-    console.log("INSTRUCTOR COURSES API ERROR............", error);
+    // console.log("INSTRUCTOR COURSES API ERROR............", error);
     toast.error(error.message);
   }
   toast.dismiss(toastId);
@@ -377,8 +377,8 @@ export const createRating = async (data, token) => {
     success = true;
   } catch (error) {
     success = false;
-    console.log("CREATE RATING API ERROR............", error);
-    toast.error(error.message);
+    // console.log("CREATE RATING API ERROR............", error);
+    toast.error(error.response.data.message);
   }
   toast.dismiss(toastId);
   return success;
