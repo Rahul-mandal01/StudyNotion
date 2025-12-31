@@ -264,6 +264,7 @@ export default function CourseInformationForm() {
         register={register}
         setValue={setValue}
         errors={errors}
+        video={false}
         editData={editCourse ? course?.thumbnail : null}
       />
       {/* Benefits of the course */}
