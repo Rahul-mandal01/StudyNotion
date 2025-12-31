@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import Footer from "../components/common/Footer";
 import { useParams } from "react-router-dom";
-import { apiConnector } from "../services/apiconnector";
+import { apiConnector } from "../services/apiConnector";
 import { categories } from "../services/apis";
-import { getCatalogaPageData } from "../services/operations/pageAndComponentData";
-import Course_Card from "../components/core/Catalog/Course_Card";
-import CourseSlider from "../components/core/Catalog/CourseSlider";
+import { getCatalogPageData } from "../services/operations/catalogAPI";
+import CourseCard from "../components/core/catalog/CourseCard";
+import CourseSlider from "../components/core/catalog/CourseSlider";
 import { useSelector } from "react-redux";
 import Error from "./Error";
 
@@ -31,7 +31,7 @@ const Catalog = () => {
   useEffect(() => {
     const getCategoryDetails = async () => {
       try {
-        const res = await getCatalogaPageData(categoryId);
+        const res = await getCatalogPageData(categoryId);
         console.log("PRinting res: ", res);
         setCatalogPageData(res);
       } catch (error) {
@@ -125,7 +125,7 @@ const Catalog = () => {
             {catalogPageData?.data?.mostSellingCourses
               ?.slice(0, 4)
               .map((course, i) => (
-                <Course_Card course={course} key={i} Height={"h-[400px]"} />
+                <CourseCard course={course} key={i} Height={"h-[400px]"} />
               ))}
           </div>
         </div>
