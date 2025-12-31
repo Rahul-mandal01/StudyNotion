@@ -1,28 +1,30 @@
-import { useEffect, useState } from "react";
-import ProgressBar from "@ramonak/react-progress-bar";
-import { BiDotsVerticalRounded } from "react-icons/bi";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react"
+import ProgressBar from "@ramonak/react-progress-bar"
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
-import { getUserEnrolledCourses } from "../../../services/operations/profileAPI";
+import { getUserEnrolledCourses } from "../../../services/operations/profileAPI"
 
 export default function EnrolledCourses() {
-  const { token } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth)
+  const navigate = useNavigate()
 
-  const [enrolledCourses, setEnrolledCourses] = useState(null);
-  const getEnrolledCourses = async () => {
-    try {
-      const res = await getUserEnrolledCourses(token);
+  const [enrolledCourses, setEnrolledCourses] = useState(null)
 
-      setEnrolledCourses(res);
-    } catch (error) {
-      console.log("Could not fetch enrolled courses.");
-    }
-  };
   useEffect(() => {
-    getEnrolledCourses();
-  }, []);
+    ;(async () => {
+      try {
+        const res = await getUserEnrolledCourses(token) // Getting all the published and the drafted courses
+
+        // Filtering the published course out
+        const filterPublishCourse = res.filter((ele) => ele.status !== "Draft")
+        setEnrolledCourses(filterPublishCourse)
+      } catch (error) {
+        console.log("Could not fetch enrolled courses.")
+      }
+    })()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -57,7 +59,7 @@ export default function EnrolledCourses() {
                 onClick={() => {
                   navigate(
                     `/view-course/${course?._id}/section/${course.courseContent?.[0]?._id}/sub-section/${course.courseContent?.[0]?.subSection?.[0]?._id}`
-                  );
+                  )
                 }}
               >
                 <img
@@ -88,5 +90,5 @@ export default function EnrolledCourses() {
         </div>
       )}
     </>
-  );
+  )
 }
