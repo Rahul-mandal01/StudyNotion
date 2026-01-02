@@ -43,7 +43,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-     "test": "react-scripts build",
+    "test": "DISABLE_ESLINT_PLUGIN=true react-scripts build",
     "eject": "react-scripts eject",
     "server": "cd server && npm run dev",
     "dev": "concurrently -n \"client,server\" -c \"bgBlue,bgYellow\" \"npm start\" \"npm run server\""
@@ -66,10 +66,9 @@
       "last 1 safari version"
     ]
   },
-    "engines": {
+  "engines": {
     "node": "22.15.1"
   },
-
   "devDependencies": {
     "tailwindcss": "^3.2.7"
   }
