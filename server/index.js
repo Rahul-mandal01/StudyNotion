@@ -16,6 +16,11 @@ const dotenv = require("dotenv");
 
 // Setting up port number
 const PORT = process.env.PORT || 4000;
+const allowedOrigins = process.env.AllOWED_ORIGINS
+  ? process.env.AllOWED_ORIGINS.split(',').map((origin) => origin.trim())
+  : ['http://localhost:3001'];
+
+console.log("ALLOWED_ORIGINS:........................", allowedOrigins);
 
 // Loading environment variables from .env file
 dotenv.config();
@@ -28,7 +33,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: allowedOrigins,
     credentials: true,
   })
 );
