@@ -1,32 +1,115 @@
-# React & Tailwind CSS Starter Pack
+# 🎓 StudyNotion
 
-This is a starter pack for creating React projects with Tailwind CSS configured. It uses React version **18.2** and Tailwind CSS version **3.2**.
+**StudyNotion** is a full-stack online learning platform built using the **MERN Stack (MongoDB, Express, React, Node.js)**.  
+It enables students to explore and enroll in courses, while instructors can create, manage, and publish their own courses — all in one place.
 
-## Usage
+---
 
-This starter pack includes a basic setup for using **Tailwind CSS with React**. To start building your own components and styles, follow these steps:
+## 🚀 Key Features
 
-1. Clone the repository to your local machine.
-    ```sh
-    git clone https://github.com/Rahul-mandal01/StudyNotion.git
-    ```
+- 🔐 Secure Authentication & Authorization (JWT-based)
+- 👥 Role-based access (Student & Instructor)
+- 📚 Browse, search, and filter courses
+- 🧑‍🏫 Instructor dashboard for course management
+- 🛒 Course purchase & enrollment flow
+- 💳 Razorpay payment gateway integration
+- ☁️ Media uploads using Cloudinary
+- 📧 Email support (OTP, password reset)
+- 📊 User dashboards with progress tracking
+- 🎨 Responsive UI with Tailwind CSS
 
-1. Install the required packages.
-    ```sh
-    cd react-tailwind-css-starter-pack
-    npm install
-    ```
+---
 
-1. Start the development server.
-    ```sh
-    npm start
-    ```
-1. Open the project in your browser at [`http://localhost:3000`](http://localhost:3000) to view your project.
-1. Create your React components and add your styles using Tailwind classes. You can also create new CSS files and import them into your components.
+## 🧱 Tech Stack
+
+**Frontend**
+- React.js
+- Tailwind CSS
+
+**Backend**
+- Node.js
+- Express.js
+
+**Database**
+- MongoDB
+
+**Other Tools & Services**
+- Cloudinary (media storage)
+- Razorpay (payments)
+- JWT (authentication)
+
+---
 
 
-The project is set up to use `postcss-cli` to process your CSS files. You can add your own `tailwind.config.js` file to customize your Tailwind setup.
+---
 
-## Contributing
+## 🛠️ Installation & Setup
 
-Contributions are welcome! If you have any suggestions or find any issues, please feel free to open an issue or a pull request.
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Rahul-mandal01/StudyNotion.git
+cd StudyNotion
+```
+
+## 3️⃣ Environment Variables
+```bash
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+
+CLOUDINARY_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_key
+CLOUDINARY_API_SECRET=your_cloudinary_secret
+
+RAZORPAY_KEY_ID=your_razorpay_key
+RAZORPAY_KEY_SECRET=your_razorpay_secret
+
+```
+
+
+## 🌐 Usage
+
+- Open `http://localhost:3000`
+- Sign up as **Student** or **Instructor**
+- Students can browse and enroll in courses
+- Instructors can create and manage courses
+- Payments are handled securely via **Razorpay**
+
+---
+
+## 📜 Available Scripts
+
+| Command | Description |
+|--------|------------|
+| `npm run dev` | Run project |
+| `npm run build` | Build frontend for production |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository  
+2. Create a new branch (`feature/your-feature`)  
+3. Commit your changes  
+4. Push to your branch  
+5. Open a Pull Request  
+
+---
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 🙌 Author
+
+**Rahul Kumar Mandal**  
+GitHub: [Rahul-mandal01](https://github.com/Rahul-mandal01)
+
+---
+
+⭐ If you like this project, consider giving it a star!
