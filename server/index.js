@@ -16,7 +16,7 @@ const dotenv = require("dotenv");
 
 // Setting up port number
 const PORT = process.env.PORT || 4000;
-const allowedOrigins = process.env.AllOWED_ORIGINS
+const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map((origin) => origin.trim())
   : ['http://localhost:3001'];
 
